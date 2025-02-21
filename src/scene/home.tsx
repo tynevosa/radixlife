@@ -5,6 +5,8 @@ class HomeScene extends Phaser.Scene {
   private eggs: { egg: Phaser.GameObjects.Image; glow: Phaser.GameObjects.Image; }[] = [];
   private numbers: Phaser.GameObjects.Text[] = [];
   private eggsCount: string = '1000';
+  private modal!: Phaser.GameObjects.Container;
+  private overlay!: Phaser.GameObjects.Graphics;
 
   // Default width & height of the background
   private readonly defaultBgWidth = 1440;
@@ -38,6 +40,8 @@ class HomeScene extends Phaser.Scene {
     this.load.image('background', '/scene/home/background.png'); // Background
     this.load.image('egg', '/scene/home/egg.png'); // Egg
     this.load.image('glow', '/scene/home/glow.png'); // Glow effect
+    this.load.image('buy-egg-modal', '/scene/home/buy-egg-modal.png');
+    this.load.image('modal-close', '/scene/home/modal-close.png');
   }
 
   create() {
@@ -50,6 +54,104 @@ class HomeScene extends Phaser.Scene {
 
     // Adjust positions and scale on window resize
     this.scale.on('resize', this.resizeScene, this);
+  }
+
+  private closeModal = () => {
+    this.tweens.add({
+      targets: [this.overlay, this.modal],
+      alpha: 0,
+      duration: 500,
+      ease: 'Power2',
+      onComplete: () => {
+        this.modal.destroy();
+        this.overlay.destroy();
+      }
+    });
+  }
+
+  private showModal = () => {
+    const { width, height } = this.scale;
+
+    if (this.modal) {
+      this.modal.destroy();
+    }
+
+    this.overlay = this.add.graphics();
+    this.overlay.setAlpha(0);
+    this.overlay.setInteractive(new Phaser.Geom.Rectangle(0, 0, width, height), Phaser.Geom.Rectangle.Contains);
+
+    const modalBg = this.add.image(0, 0, 'buy-egg-modal').setOrigin(0.5);
+
+    const closeButton = this.add.image(0, 0, 'modal-close')
+      .setOrigin(0.5)
+      .setInteractive({ cursor: 'pointer' });
+
+    const buyButton = this.add.text(0, 0, 'BUY EGG', {
+      fontFamily: 'Irish Grover',
+      fontSize: '45px',
+      color: '#720E20',
+      padding: { left: 10, right: 10, top: 5, bottom: 5 },
+      align: 'center'
+    }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
+
+    closeButton.on('pointerdown', () => {
+      this.closeModal();
+    });
+
+    buyButton.on('pointerdown', () => {
+      console.log('Buy egg button clicked!');
+    });
+
+    // Highlight effect using blend mode on hover
+    buyButton.on('pointerover', () => {
+      buyButton.setStyle({ color: '#FECC0B' });
+    });
+
+    buyButton.on('pointerout', () => {
+      buyButton.setStyle({ color: '#720E20' });
+    });
+
+    // Create a container for the modal elements
+    this.modal = this.add.container(width / 2, height / 2, [modalBg, closeButton, buyButton]);
+    this.modal.setAlpha(0);
+    this.modal.setScale(0.8);
+
+    this.overlay.setDepth(10);
+    this.modal.setDepth(11);
+
+    // Animate the modal container
+    this.tweens.add({
+      targets: [this.overlay, this.modal],
+      alpha: 1,
+      scale: 1,
+      duration: 500,
+      ease: 'Power2'
+    });
+
+    this.resizeModal();
+  }
+
+  private resizeModal = () => {
+    if (!this.modal || !this.overlay) return;
+
+    const { width, height } = this.scale;
+    this.modal.setPosition(width / 2, height / 2);
+    this.overlay.clear();
+    this.overlay.fillStyle(0x000000, 0.8);
+    this.overlay.fillRect(0, 0, width, height);
+    const modalBg = this.modal.getAt(0) as Phaser.GameObjects.Image;
+    const closeButton = this.modal.getAt(1) as Phaser.GameObjects.Image;
+    const buyButton = this.modal.getAt(2) as Phaser.GameObjects.Text;
+
+    const scaleFactor = height / this.defaultBgHeight;
+
+    modalBg.setScale(scaleFactor);
+    modalBg.setPosition(0, 0);
+
+    closeButton.setScale(scaleFactor);
+    closeButton.setPosition(modalBg.x + modalBg.displayWidth / 2 + 2, modalBg.y - modalBg.displayHeight / 2 + 145 * scaleFactor);
+    buyButton.setScale(scaleFactor);
+    buyButton.setPosition(modalBg.x, modalBg.y + modalBg.height * 0.38 * scaleFactor);
   }
 
   private showRemainingEggsCount = (count: string) => {
@@ -105,7 +207,7 @@ class HomeScene extends Phaser.Scene {
       // Egg image
       const egg = this.add.image(0, 0, 'egg')
         .setOrigin(0.5)
-        .setInteractive(); // Make it clickable
+        .setInteractive({ cursor: 'pointer' });
 
       // Set position of the egg
       egg.setPosition(eggX, eggY);
@@ -127,9 +229,9 @@ class HomeScene extends Phaser.Scene {
 
       // Click event
       egg.on('pointerdown', () => {
-        console.log('Egg clicked!');
         egg.setScale(egg.scale * 1.1);
         this.time.delayedCall(100, () => egg.setScale(egg.scale / 1.1));
+        this.showModal();
       });
 
       // Store both egg & glow
@@ -148,6 +250,7 @@ class HomeScene extends Phaser.Scene {
     this.resizeBackground();
     this.showRemainingEggsCount(this.eggsCount);
     this.showEggs();
+    this.resizeModal();
   };
 }
 
