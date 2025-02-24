@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import GameScene from './scene/home';
+import EggStoreScene from './scene/eggStore/index';
 
 const Game: React.FC = () => {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -12,7 +12,7 @@ const Game: React.FC = () => {
         width: window.innerWidth,
         height: window.innerHeight,
         parent: 'phaser-container',
-        scene: [GameScene],
+        scene: [EggStoreScene],
         scale: {
           mode: Phaser.Scale.RESIZE, // Resizes dynamically
           autoCenter: Phaser.Scale.CENTER_BOTH,
