@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import BuyEggModal from './buy';
 import HatchEggModal from './hatch';
+import { fetchRemainingEggsCount } from '../../api/eggStore';
 
 class EggStoreScene extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
@@ -15,7 +16,7 @@ class EggStoreScene extends Phaser.Scene {
   private readonly defaultBgHeight = 1024;
 
   // Egg positions based on default background dimensions
-  private readonly eggPositions = [
+  private eggPositions = [
     { x: 93, y: 723, scale: 1 }, // Absolute position on default size
     { x: 551, y: 702, scale: 1 },
     { x: 561, y: 891, scale: 1 },
@@ -47,7 +48,17 @@ class EggStoreScene extends Phaser.Scene {
     this.load.image('hatch-egg-modal', '/scene/eggStore/hatch-egg-modal.png');
   }
 
-  create() {
+  async create() {
+    // Fetch remaining eggs count
+    const remainingEggsCount = await fetchRemainingEggsCount();
+    this.eggsCount = remainingEggsCount.toString().padStart(4, '0');
+
+    // If the remaining eggs count is less than the maximum number of eggs to display on the scene,
+    // slice the eggPositions array to only include positions corresponding to the remaining eggs count.
+    if (remainingEggsCount < this.eggPositions.length) {
+      this.eggPositions = this.eggPositions.slice(0, remainingEggsCount);
+    }
+
     // Background image
     this.background = this.add.image(0, 0, 'background').setOrigin(0.5, 0);
     this.resizeBackground();
