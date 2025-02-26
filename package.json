@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@radixdlt/babylon-gateway-api-sdk": "^1.10.0-dev.1",
+    "@radixdlt/radix-dapp-toolkit": "^2.2.1",
     "axios": "^1.7.9",
     "phaser": "^3.88.2",
     "react": "^19.0.0",

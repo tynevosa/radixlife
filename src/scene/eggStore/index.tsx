@@ -2,6 +2,9 @@ import Phaser from 'phaser';
 import BuyEggModal from './buy';
 import HatchEggModal from './hatch';
 import { fetchRemainingEggsCount } from '../../api/eggStore';
+import { DEFAULT_SCENE_HEIGHT, DEFAULT_SCENE_WIDTH } from '../../const/ui';
+import { dAppToolkit } from '../../utils/radix';
+import { SendTransactionResult } from '../../const/type';
 
 class EggStoreScene extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
@@ -10,10 +13,7 @@ class EggStoreScene extends Phaser.Scene {
   private eggsCount: string = '1000';
   private buyEggModal!: BuyEggModal;
   private hatchEggModal!: HatchEggModal;
-
-  // Default width & height of the background
-  private readonly defaultBgWidth = 1440;
-  private readonly defaultBgHeight = 1024;
+  private connectButton!: Phaser.GameObjects.Container;
 
   // Egg positions based on default background dimensions
   private eggPositions = [
@@ -61,11 +61,13 @@ class EggStoreScene extends Phaser.Scene {
 
     // Background image
     this.background = this.add.image(0, 0, 'background').setOrigin(0.5, 0);
-    this.resizeBackground();
-
-    this.showEggs();
-    this.showRemainingEggsCount(this.eggsCount);
     this.buyEggModal = new BuyEggModal(this);
+    this.connectButton = this.add.container(this.scale.width / 2, this.scale.height / 2);
+    const domElement = this.add.dom(0, 0).createFromHTML(`<radix-connect-button />`);
+    this.connectButton.add(domElement);
+    dAppToolkit.buttonApi.setMode('dark');
+
+    this.onResize();
 
     // Adjust positions and scale on window resize
     this.scale.on('resize', this.onResize, this);
@@ -74,14 +76,14 @@ class EggStoreScene extends Phaser.Scene {
   private showRemainingEggsCount = (count: string) => {
     const bgWidth = this.background.displayWidth;
     const bgHeight = this.background.displayHeight;
-    const scaleFactor = bgWidth / this.defaultBgWidth;
+    const scaleFactor = bgWidth / DEFAULT_SCENE_WIDTH;
 
     this.numbers.forEach((char) => char.destroy());
     // Add numbers with the required font and styles
     count.split('').forEach((num, index) => {
       // Calculate number position relative to the background
-      const numX = this.background.x - bgWidth / 2 + (this.numPositions[index].x * bgWidth / this.defaultBgWidth);
-      const numY = this.background.y + (this.numPositions[index].y * bgHeight / this.defaultBgHeight);
+      const numX = this.background.x - bgWidth / 2 + (this.numPositions[index].x * bgWidth / DEFAULT_SCENE_WIDTH);
+      const numY = this.background.y + (this.numPositions[index].y * bgHeight / DEFAULT_SCENE_HEIGHT);
       const numSize = this.numPositions[index].size * scaleFactor;
 
       const number = this.add.text(numX, numY, num, {
@@ -104,7 +106,7 @@ class EggStoreScene extends Phaser.Scene {
   private showEggs = () => {
     const bgWidth = this.background.displayWidth;
     const bgHeight = this.background.displayHeight;
-    const scaleFactor = bgWidth / this.defaultBgWidth;
+    const scaleFactor = bgWidth / DEFAULT_SCENE_WIDTH;
 
     this.eggs.forEach((egg) => {
       egg.egg.destroy();
@@ -113,8 +115,8 @@ class EggStoreScene extends Phaser.Scene {
     // Create eggs and glow effects
     this.eggPositions.forEach((pos) => {
       // Position the egg based on scaled coordinates
-      const eggX = this.background.x - bgWidth / 2 + (pos.x * bgWidth) / this.defaultBgWidth;
-      const eggY = this.background.y + (pos.y * bgHeight) / this.defaultBgHeight;
+      const eggX = this.background.x - bgWidth / 2 + (pos.x * bgWidth) / DEFAULT_SCENE_WIDTH;
+      const eggY = this.background.y + (pos.y * bgHeight) / DEFAULT_SCENE_HEIGHT;
 
       // Glow effect (initially hidden)
       const glow = this.add.image(0, 0, 'glow')
@@ -149,7 +151,9 @@ class EggStoreScene extends Phaser.Scene {
         egg.setScale(egg.scale * 1.1);
         this.time.delayedCall(100, () => egg.setScale(egg.scale / 1.1));
         this.buyEggModal.show();
-        this.buyEggModal.on('bought', this.onBuyEgg);
+        this.buyEggModal.on('bought', (res: SendTransactionResult) => {
+          this.onBuyEgg(res);
+        });
       });
 
       // Store both egg & glow
@@ -157,25 +161,29 @@ class EggStoreScene extends Phaser.Scene {
     });
   }
 
-  private resizeBackground = () => {
+  private onResize = () => {
     const { width, height } = this.scale;
     this.background.displayHeight = height;
     this.background.scaleX = this.background.scaleY;
     this.background.x = width / 2;
-  };
+    const scaleFactor = height / DEFAULT_SCENE_HEIGHT;
 
-  private onResize = () => {
-    this.resizeBackground();
     this.showRemainingEggsCount(this.eggsCount);
     this.showEggs();
+    this.connectButton.setScale(scaleFactor);
+    this.connectButton.setPosition(this.background.x + this.background.displayWidth / 2 - 133 * scaleFactor, 72 * scaleFactor);
   };
 
-  private onBuyEgg = () => {
-    this.hatchEggModal = new HatchEggModal(this, 3600, 3600); // Temporarily set 1 hour
-    this.hatchEggModal.show();
-    this.hatchEggModal.on('hatched', () => {
-      // Procedure after egg hatched goes here...
-    });
+  private onBuyEgg = (res: SendTransactionResult) => {
+    if (res.isOk()) {
+      this.hatchEggModal = new HatchEggModal(this, 30, 30); // Temporarily set 30 seconds
+      this.hatchEggModal.show();
+      this.hatchEggModal.on('hatched', () => {
+        // Procedure after egg hatched goes here...
+      });
+    } else {
+      console.error('Buy Egg: ', res.error);
+    }
   }
 }
 

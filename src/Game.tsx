@@ -17,6 +17,9 @@ const Game: React.FC = () => {
           mode: Phaser.Scale.RESIZE, // Resizes dynamically
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
+        dom: {
+          createContainer: true, // Enables the use of HTML elements in the scene
+        },
       });
     }
 

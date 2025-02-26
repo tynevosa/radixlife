@@ -11,6 +11,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --radix-connect-button-width: 206px;
+  --radix-connect-button-height: 55px;
+  --radix-connect-button-border-radius: 30px;
 }
 
 a {

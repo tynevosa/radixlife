@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { DEFAULT_SCENE_HEIGHT, MODAL_DEPTH } from '../../const/ui';
+import { dAppToolkit } from '../../utils/radix';
 
 export default class BuyEggModal extends Phaser.GameObjects.Container {
   private overlay?: Phaser.GameObjects.Graphics;
@@ -37,8 +38,34 @@ export default class BuyEggModal extends Phaser.GameObjects.Container {
     });
 
     buyButton.on('pointerdown', () => {
-      this.hide();
-      this.emit('bought'); // Emit buy event
+      const wallet = dAppToolkit.walletApi.getWalletData()?.accounts[0]['address'];
+      if (!wallet) return
+      dAppToolkit.walletApi.sendTransaction({
+        transactionManifest: `
+        CALL_METHOD
+          Address("${wallet}")
+          "withdraw"
+          Address("resource_tdx_2_1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxtfd2jc")
+          Decimal("300")
+        ;
+        TAKE_ALL_FROM_WORKTOP
+          Address("resource_tdx_2_1tknxxxxxxxxxradxrdxxxxxxxxx009923554798xxxxxxxxxtfd2jc")
+          Bucket("xrd_bucket")
+        ;
+        CALL_METHOD
+          Address("component_tdx_2_1cpyr294csm672ekfcyu6u9fjn8stjcma6snjpz2wdn0eef72psah9x")
+          "buy_egg"
+          Bucket("xrd_bucket")
+        ;
+        CALL_METHOD
+          Address("${wallet}")
+          "deposit_batch"
+          Expression("ENTIRE_WORKTOP")
+        ;`,
+      }).then(res => {
+        this.hide();
+        this.emit('bought', res); // Emit buy event
+      })
     });
 
     // Highlight effect using blend mode on hover
