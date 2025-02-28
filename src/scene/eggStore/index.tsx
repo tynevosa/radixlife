@@ -63,7 +63,11 @@ class EggStoreScene extends Phaser.Scene {
     this.background = this.add.image(0, 0, 'background').setOrigin(0.5, 0);
     this.buyEggModal = new BuyEggModal(this);
     this.connectButton = this.add.container(this.scale.width / 2, this.scale.height / 2);
-    const domElement = this.add.dom(0, 0).createFromHTML(`<radix-connect-button />`);
+    const domElement = this.add.dom(0, 0).createFromHTML(`
+      <div style="width: 206px; height: 55px;">
+        <radix-connect-button />
+      </div>
+    `);
     this.connectButton.add(domElement);
     dAppToolkit.buttonApi.setMode('dark');
 
