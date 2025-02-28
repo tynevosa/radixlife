@@ -6,7 +6,7 @@ import { DEFAULT_SCENE_HEIGHT, DEFAULT_SCENE_WIDTH } from '../../const/ui';
 import { dAppToolkit } from '../../utils/radix';
 import { SendTransactionResult } from '../../const/type';
 
-class EggStoreScene extends Phaser.Scene {
+class EggStore extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
   private eggs: { egg: Phaser.GameObjects.Image; glow: Phaser.GameObjects.Image; }[] = [];
   private numbers: Phaser.GameObjects.Text[] = [];
@@ -183,7 +183,16 @@ class EggStoreScene extends Phaser.Scene {
       this.hatchEggModal = new HatchEggModal(this, 30, 30); // Temporarily set 30 seconds
       this.hatchEggModal.show();
       this.hatchEggModal.on('hatched', () => {
-        // Procedure after egg hatched goes here...
+        this.tweens.add({
+          targets: this.cameras.main,
+          scaleX: 0.5,
+          scaleY: 0.5,
+          alpha: 0,
+          duration: 500,
+          onComplete: () => {
+            this.scene.switch('Home');
+          }
+        });
       });
     } else {
       console.error('Buy Egg: ', res.error);
@@ -191,4 +200,4 @@ class EggStoreScene extends Phaser.Scene {
   }
 }
 
-export default EggStoreScene;
+export default EggStore;

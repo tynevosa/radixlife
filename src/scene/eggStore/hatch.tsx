@@ -105,8 +105,8 @@ export default class HatchEggModal extends Phaser.GameObjects.Container {
       duration: 500,
       ease: 'Power2',
       onComplete: () => {
-        this.destroy();
         this.emit('hatched'); // Emit hatch event
+        this.destroy();
       }
     });
   }

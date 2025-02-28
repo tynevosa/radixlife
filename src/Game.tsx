@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import EggStoreScene from './scene/eggStore/index';
+import Boot from './scene/boot/index';
+import Preload from './scene/preload/index';
+import Home from './scene/home/index';
+import EggStore from './scene/eggStore/index';
+import registerRoundedRectangleGraphicsFactory from './components/roundedRectangle/registerRoundedRectangleGraphicsFactory';
 
 const Game: React.FC = () => {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -9,18 +13,22 @@ const Game: React.FC = () => {
     if (!gameRef.current) {
       gameRef.current = new Phaser.Game({
         type: Phaser.AUTO,
-        width: window.innerWidth,
-        height: window.innerHeight,
-        parent: 'phaser-container',
-        scene: [EggStoreScene],
+        width: 1440,
+        height: 1024,
         scale: {
-          mode: Phaser.Scale.RESIZE, // Resizes dynamically
+          mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
         dom: {
           createContainer: true, // Enables the use of HTML elements in the scene
         },
       });
+
+      registerRoundedRectangleGraphicsFactory();
+      gameRef.current.scene.add("EggStore", EggStore);
+      gameRef.current.scene.add("Home", Home);
+      gameRef.current.scene.add("Preload", Preload);
+      gameRef.current.scene.add("Boot", Boot, true);
     }
 
     return () => {
@@ -29,7 +37,7 @@ const Game: React.FC = () => {
     };
   }, []);
 
-  return <div id="phaser-container" className="w-screen h-screen"></div>;
+  return <></>;
 };
 
 export default Game;
