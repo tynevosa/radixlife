@@ -13,10 +13,11 @@ const Game: React.FC = () => {
     if (!gameRef.current) {
       gameRef.current = new Phaser.Game({
         type: Phaser.AUTO,
-        width: 1440,
-        height: 1024,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        parent: 'root',
         scale: {
-          mode: Phaser.Scale.FIT,
+          mode: Phaser.Scale.RESIZE,
           autoCenter: Phaser.Scale.CENTER_BOTH,
         },
         dom: {

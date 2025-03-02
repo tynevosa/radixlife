@@ -7,6 +7,14 @@ import {
   generateRolaChallenge,
 } from '@radixdlt/radix-dapp-toolkit'
 
+function showRadixButton(show: boolean) {
+  if (show) {
+    document.getElementById('radix-connect-button')?.classList.remove('hidden');
+  } else {
+    document.getElementById('radix-connect-button')?.classList.add('hidden');
+  }
+}
+
 const logger = Logger()
 const dAppDefinitionAddress = import.meta.env.VITE_DAPP_DEFINITION_ADDRESS
 const networkId = RadixNetwork.Stokenet
@@ -30,4 +38,4 @@ const gatewayApi = GatewayApiClient.initialize(
   dAppToolkit.gatewayApi.clientConfig,
 )
 
-export { dAppToolkit, gatewayApi };
+export { dAppToolkit, gatewayApi, showRadixButton };
