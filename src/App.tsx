@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createElement } from 'react';
 import Game from './Game';
 import { DEFAULT_SCENE_HEIGHT } from './const/ui';
 import { dAppToolkit } from './utils/radix';
@@ -30,7 +30,7 @@ function App() {
         right: `${buttonPos?.right}px`,
         top: `${buttonPos?.top}px`,
       }} className='hidden'>
-        <radix-connect-button />
+        {createElement("radix-connect-button")}
       </div>
     </>
   );
