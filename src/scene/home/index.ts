@@ -120,20 +120,20 @@ class Home extends Phaser.Scene {
     this.occupation.setScale(scaleFactorHeight);
     this.character.setScale(scaleFactorHeight);
 
-    this.user_status.setPosition(this.user_status.x * scaleFactorWidth, this.user_status.y * scaleFactorHeight);
-    this.user_have.setPosition(this.user_have.x * scaleFactorWidth, this.user_have.y * scaleFactorHeight);
-    this.user_detail.setPosition(this.user_detail.x * scaleFactorWidth, this.user_detail.y * scaleFactorHeight);
-    this.menu.setPosition(this.menu.x * scaleFactorWidth, this.menu.y * scaleFactorHeight);
-    this.bank.setPosition(this.bank.x * scaleFactorWidth, this.bank.y * scaleFactorHeight);
-    this.buy_egg.setPosition(this.buy_egg.x * scaleFactorWidth, this.buy_egg.y * scaleFactorHeight);
-    this.school.setPosition(this.school.x * scaleFactorWidth, this.school.y * scaleFactorHeight);
-    this.jail.setPosition(this.jail.x * scaleFactorWidth, this.jail.y * scaleFactorHeight);
-    this.choice.setPosition(this.choice.x * scaleFactorWidth, this.choice.y * scaleFactorHeight);
-    this.store.setPosition(this.store.x * scaleFactorWidth, this.store.y * scaleFactorHeight);
-    this.item.setPosition(this.item.x * scaleFactorWidth, this.item.y * scaleFactorHeight);
-    this.job.setPosition(this.job.x * scaleFactorWidth, this.job.y * scaleFactorHeight);
-    this.occupation.setPosition(this.occupation.x * scaleFactorWidth, this.occupation.y * scaleFactorHeight);
-    this.character.setPosition(this.character.x * scaleFactorWidth, this.character.y * scaleFactorHeight);
+    this.user_status.setPosition(53 * scaleFactorWidth, 28 * scaleFactorHeight);
+    this.menu.setPosition(664 * scaleFactorWidth, 46 * scaleFactorHeight);
+    this.user_have.setPosition(199 * scaleFactorWidth, 149 * scaleFactorHeight);
+    this.user_detail.setPosition(49 * scaleFactorWidth, 237 * scaleFactorHeight);
+    this.bank.setPosition(386 * scaleFactorWidth, 249 * scaleFactorHeight);
+    this.buy_egg.setPosition(121 * scaleFactorWidth, 813 * scaleFactorHeight);
+    this.school.setPosition(745 * scaleFactorWidth, 157 * scaleFactorHeight);
+    this.jail.setPosition(745 * scaleFactorWidth, 447 * scaleFactorHeight);
+    this.choice.setPosition(1083 * scaleFactorWidth, 148 * scaleFactorHeight);
+    this.store.setPosition(1083 * scaleFactorWidth, 469 * scaleFactorHeight);
+    this.item.setPosition(773 * scaleFactorWidth, 738 * scaleFactorHeight);
+    this.job.setPosition(423 * scaleFactorWidth, 642 * scaleFactorHeight);
+    this.occupation.setPosition(1110 * scaleFactorWidth, 790 * scaleFactorHeight);
+    this.character.setPosition(977 * scaleFactorWidth, 52 * scaleFactorHeight);
   };
 
   preload() {
