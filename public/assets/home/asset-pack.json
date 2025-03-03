@@ -75,6 +75,71 @@
                 "url": "assets/home/emoji-sick.png",
                 "type": "image",
                 "key": "emoji-sick"
+            },
+            {
+                "url": "assets/home/bank.png",
+                "type": "image",
+                "key": "bank"
+            },
+            {
+                "url": "assets/home/board-piece.png",
+                "type": "image",
+                "key": "board-piece"
+            },
+            {
+                "url": "assets/home/board.png",
+                "type": "image",
+                "key": "board"
+            },
+            {
+                "url": "assets/home/button-other.png",
+                "type": "image",
+                "key": "button-other"
+            },
+            {
+                "url": "assets/home/button-primary.png",
+                "type": "image",
+                "key": "button-primary"
+            },
+            {
+                "url": "assets/home/button-secondary.png",
+                "type": "image",
+                "key": "button-secondary"
+            },
+            {
+                "url": "assets/home/button-red.png",
+                "type": "image",
+                "key": "button-red"
+            },
+            {
+                "url": "assets/home/dollar-bunch.png",
+                "type": "image",
+                "key": "dollar-bunch"
+            },
+            {
+                "url": "assets/home/item-box.png",
+                "type": "image",
+                "key": "item-box"
+            },
+            {
+                "url": "assets/home/jail.png",
+                "type": "image",
+                "key": "jail"
+            },
+            {
+                "url": "assets/home/store.png",
+                "type": "image",
+                "key": "store"
+            },
+            {
+                "url": "assets/home/school.png",
+                "type": "image",
+                "key": "school"
+            },
+            {
+                "url": "assets/home/balance_plus.png",
+                "type": "image",
+                "key": "balance_plus"
             }
         ]
     },
