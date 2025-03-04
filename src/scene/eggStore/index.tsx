@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import BuyEggModal from './buy';
 import HatchEggModal from './hatch';
 import { fetchRemainingEggsCount } from '../../api/eggStore';
-import { DEFAULT_SCENE_HEIGHT, DEFAULT_SCENE_WIDTH, FONT_COLOR_PRIMARY } from '../../const/ui';
+import { DEFAULT_SCENE_HEIGHT, FONT_COLOR_PRIMARY } from '../../const/ui';
 // import { dAppToolkit } from '../../utils/radix';
 import { SendTransactionResult } from '../../const/type';
 import Label from '../../components/label';
