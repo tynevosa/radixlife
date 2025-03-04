@@ -2,11 +2,12 @@ import Phaser from 'phaser';
 import BuyEggModal from './buy';
 import HatchEggModal from './hatch';
 import { fetchRemainingEggsCount } from '../../api/eggStore';
-import { DEFAULT_SCENE_HEIGHT, FONT_COLOR_PRIMARY } from '../../const/ui';
+import { DEFAULT_SCENE_HEIGHT, DEFAULT_SCENE_WIDTH, FONT_COLOR_PRIMARY } from '../../const/ui';
 // import { dAppToolkit } from '../../utils/radix';
 import { SendTransactionResult } from '../../const/type';
 import Label from '../../components/label';
 import { showRadixButton } from '../../utils/radix';
+import { isMobile, isPortrait } from '../../utils/other';
 
 class Egg extends Phaser.GameObjects.Sprite {
   constructor(scene: EggStore, x: number, y: number, eggTexture: string) {
@@ -47,6 +48,7 @@ class EggStore extends Phaser.Scene {
   // private connectButton!: Phaser.GameObjects.Container;
   private nameplate!: Label;
   private eggContainers: EggContainer[] = [];
+  private board!: EggContainer;
 
   // Egg positions based on default background dimensions
   private eggPositions = [
@@ -171,37 +173,37 @@ class EggStore extends Phaser.Scene {
       'egg',
     ))
 
-    const board = new EggContainer(this, 0.75, 0.2);
-    board.add(new Label(
+    this.board = new EggContainer(this, 0.75, 0.2);
+    this.board.add(new Label(
       this,
       0, 0,
       'scene-eggStore-board',
       new Phaser.GameObjects.Text(this, 0, 0, 'Total number of egg remaining',
         { fontFamily: 'Irish Grover', fontSize: '17px', color: '#B45A1E' }
       ),
-      board,
+      this.board,
       undefined, undefined,
       0.5, 0.22,
     ))
     this.eggsCount.split('').forEach((num, index) => {
-      board.add(new Label(
+      this.board.add(new Label(
         this,
         70 + index * 61, 90,
         'scene-eggStore-piece',
         new Phaser.GameObjects.Text(this, 0, 0, num,
           { fontFamily: 'Irish Grover', fontSize: '57.93px', color: FONT_COLOR_PRIMARY }
         ),
-        board,
+        this.board,
       ))
     })
-    board.add(new Label(
+    this.board.add(new Label(
       this,
       90, 160,
       'scene-eggStore-pricePanel',
       new Phaser.GameObjects.Text(this, 0, 0, '1 EGG = 300XRD',
         { fontFamily: 'Irish Grover', fontSize: '21.63px', color: FONT_COLOR_PRIMARY }
       ),
-      board,
+      this.board,
     ))
 
     this.eggContainers.push(...[
@@ -212,7 +214,7 @@ class EggStore extends Phaser.Scene {
       table1,
       cushion2,
       cushion1,
-      board,
+      this.board,
     ]);
 
     // this.connectButton = this.add.container(this.scale.width / 2, this.scale.height / 2);
@@ -235,15 +237,144 @@ class EggStore extends Phaser.Scene {
     this.background.setDisplaySize(width, height);
     const scaleFactor = height / DEFAULT_SCENE_HEIGHT;
 
-    this.nameplate.setScale(scaleFactor);
-    this.eggContainers.forEach(container => {
-      container.setScale(scaleFactor);
-      container.setPosition(container.posInPercent.x * width, container.posInPercent.y * height);
-    });
+    if (isMobile()) {
+      if (isPortrait()) {
+        const scaleFactorWidthMobilePortrait = width / 520;
+        this.nameplate.setScale(scaleFactorWidthMobilePortrait);
+
+        this.eggContainers.map((egg) => egg.destroy());
+
+        const table1 = new EggContainer(this, 0.5, 0.85);
+        table1.add(new Phaser.GameObjects.Image(this, 0, 0, 'scene-eggStore-table').setScale(1.4));
+        table1.add(new Egg(
+          this,
+          -35, -142,
+          'egg',
+        ));
+
+        this.eggContainers.push(table1);
+
+        this.nameplate.setScale(scaleFactorWidthMobilePortrait);
+        this.eggContainers.forEach(container => {
+          container.setScale(scaleFactorWidthMobilePortrait);
+          container.setPosition(container.posInPercent.x * width, container.posInPercent.y * height);
+        });
+
+        this.board.destroy();
+        this.board = new EggContainer(this, 0.1, 0.25);
+        this.board.add(new Label(
+          this,
+          0, 0,
+          'scene-eggStore-board',
+          new Phaser.GameObjects.Text(this, 0, 0, 'Total number of egg remaining',
+            { fontFamily: 'Irish Grover', fontSize: '17px', color: '#B45A1E' }
+          ),
+          this.board,
+          undefined, undefined,
+          0.5, 0.22,
+        ))
+        this.eggsCount.split('').forEach((num, index) => {
+          this.board.add(new Label(
+            this,
+            70 + index * 61, 90,
+            'scene-eggStore-piece',
+            new Phaser.GameObjects.Text(this, 0, 0, num,
+              { fontFamily: 'Irish Grover', fontSize: '57.93px', color: FONT_COLOR_PRIMARY }
+            ),
+            this.board,
+          ))
+        })
+        this.board.add(new Label(
+          this,
+          90, 160,
+          'scene-eggStore-pricePanel',
+          new Phaser.GameObjects.Text(this, 0, 0, '1 EGG = 300XRD',
+            { fontFamily: 'Irish Grover', fontSize: '21.63px', color: FONT_COLOR_PRIMARY }
+          ),
+          this.board,
+        ))
+
+        this.board.setScale(scaleFactorWidthMobilePortrait * 1.1);
+        this.board.setPosition(this.board.posInPercent.x * width, this.board.posInPercent.y * height);
+      } else {
+        const scaleFactorWidthMobileLandscape = width / 1440;
+
+        this.eggContainers.map((egg) => egg.destroy());
+
+        const table1 = new EggContainer(this, 0.5, 0.65);
+        table1.add(new Phaser.GameObjects.Image(this, 0, 0, 'scene-eggStore-table').setScale(1.4));
+        table1.add(new Egg(
+          this,
+          -35, -142,
+          'egg',
+        ));
+
+        const cushion1 = new EggContainer(this, 0.2, 0.8);
+        cushion1.add(new Phaser.GameObjects.Image(this, 0, 0, 'scene-eggStore-cushion1'));
+        cushion1.add(new Egg(
+          this,
+          0, -60,
+          'egg',
+        ))
+
+        this.eggContainers.push(...[cushion1, table1]);
+        this.nameplate.setScale(scaleFactorWidthMobileLandscape);
+        this.eggContainers.forEach(container => {
+          container.setScale(scaleFactorWidthMobileLandscape);
+          container.setPosition(container.posInPercent.x * width, container.posInPercent.y * height);
+        });
+
+        this.board.destroy();
+        this.board = new EggContainer(this, 0.67, 0.15);
+        this.board.add(new Label(
+          this,
+          0, 0,
+          'scene-eggStore-board',
+          new Phaser.GameObjects.Text(this, 0, 0, 'Total number of egg remaining',
+            { fontFamily: 'Irish Grover', fontSize: '17px', color: '#B45A1E' }
+          ),
+          this.board,
+          undefined, undefined,
+          0.5, 0.22,
+        ))
+        this.eggsCount.split('').forEach((num, index) => {
+          this.board.add(new Label(
+            this,
+            70 + index * 61, 90,
+            'scene-eggStore-piece',
+            new Phaser.GameObjects.Text(this, 0, 0, num,
+              { fontFamily: 'Irish Grover', fontSize: '57.93px', color: FONT_COLOR_PRIMARY }
+            ),
+            this.board,
+          ))
+        })
+        this.board.add(new Label(
+          this,
+          90, 160,
+          'scene-eggStore-pricePanel',
+          new Phaser.GameObjects.Text(this, 0, 0, '1 EGG = 300XRD',
+            { fontFamily: 'Irish Grover', fontSize: '21.63px', color: FONT_COLOR_PRIMARY }
+          ),
+          this.board,
+        ))
+
+        this.board.setScale(scaleFactorWidthMobileLandscape * 1.1);
+        this.board.setPosition(this.board.posInPercent.x * width, this.board.posInPercent.y * height);
+      }
+    } else {
+      this.nameplate.setScale(scaleFactor);
+      this.eggContainers.forEach(container => {
+        container.setScale(scaleFactor);
+        container.setPosition(container.posInPercent.x * width, container.posInPercent.y * height);
+      });
+      this.board.setScale(scaleFactor);
+      this.board.setPosition(this.board.posInPercent.x * width, this.board.posInPercent.y * height);
+    }
 
     // const buttonScaleFactor = Math.sqrt(scaleFactor);
     // this.connectButton.setScale(buttonScaleFactor);
     // this.connectButton.setPosition(this.background.displayWidth - 236 * buttonScaleFactor, 45 * buttonScaleFactor);
+
   };
 
   public showBuyEggModal = () => {
