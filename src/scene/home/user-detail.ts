@@ -1,10 +1,15 @@
+import RoundedRectangleGraphics from "../../components/roundedRectangle/RoundedRectangleGraphics";
+
 const HEARTS = ['DEAD', 'WOUNDED', 'HUNGRY', 'SICK', 'HEALTHY'];
 
 class UserDetail extends Phaser.GameObjects.Container {
+  bg!: RoundedRectangleGraphics;
   health_bar: Phaser.GameObjects.Graphics;
   health_bar_value: number;
   health: Phaser.GameObjects.Text;
   health_frame: Phaser.GameObjects.NineSlice;
+  container0: Phaser.GameObjects.Container;
+  container1: Phaser.GameObjects.Container;
 
   constructor(
     scene: Phaser.Scene,
@@ -13,13 +18,13 @@ class UserDetail extends Phaser.GameObjects.Container {
     this.setSize(302, 563);
 
     // bg
-    const bg = scene.add.roundedRectangleGraphics(0, 0, 302, 563, 8.2);
-    bg.fillColor = 0x0C0C16;
-    this.add(bg);
+    this.bg = scene.add.roundedRectangleGraphics(0, 0, 302, 563, 8.2);
+    this.bg.fillColor = 0x0C0C16;
+    this.add(this.bg);
 
     // Define container0 (main container)
-    const container0 = scene.add.container(63, 27.01); // Position in the scene
-    container0.setSize(183, 262.72);
+    this.container0 = scene.add.container(63, 27.01); // Position in the scene
+    this.container0.setSize(183, 262.72);
 
     // Add text at the top of container0
     const text0 = scene.add.text(0, 0, "USERNAME", { "fontFamily": "Irish Grover", "fontSize": "20px" });
@@ -51,13 +56,15 @@ class UserDetail extends Phaser.GameObjects.Container {
     container00.x = -(container00.getBounds().width / 2);
 
     // Add everything to container0
-    container0.add([text0, image0, user_avatar, container00]);
-    this.resizeContainer(container0);
+    this.container0.add([text0, image0, user_avatar, container00]);
+    this.resizeContainer(this.container0);
 
     // ============================= //
 
+    // container1
+    this.container1 = scene.add.container(0, this.container0.getBounds().bottom);
     // container_heath
-    const container_heath = scene.add.container(13, container0.getBounds().bottom + 27 + 12);
+    const container_heath = scene.add.container(13, 56);
     container_heath.setSize(276, 56);
     // health_icon
     const health_bar_bg = scene.add.circle(0, 0, 28, 0x0, 0.48);
@@ -158,9 +165,10 @@ class UserDetail extends Phaser.GameObjects.Container {
       thought_avatar,
       thought
     ]);
+    this.container1.add([container_heath, container_gender, container_mood, container_thought])
 
-    this.add([container0, container_heath, container_gender, container_mood, container_thought]);
-    container0.x = bg.width / 2;
+    this.add([this.container0, this.container1]);
+    this.container0.x = this.bg.width / 2;
 
     scene.add.existing(this);
   }
@@ -209,6 +217,14 @@ class UserDetail extends Phaser.GameObjects.Container {
     return "#" + hexColor.toString(16).padStart(6, "0");
   }
 
+  convertLayout(isMobile: boolean) {
+    if (isMobile) {
+      this.bg.width = 600;
+      this.bg.height = 302;
+      this.bg.fillColor = 0x0C0C16;
+      this.container1.setPosition(this.container0.getBounds().right, 0)
+    }
+  }
 }
 
 export default UserDetail;
