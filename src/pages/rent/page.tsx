@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useDeviceOrientation from "../../hooks/device";
 import Button from "../../components/button";
+import MenuBar from "../../components/menu";
 
 const RentModal = () => {
   return (
@@ -23,7 +24,7 @@ const RentModal = () => {
           clipPath: 'polygon(5% 8%, 50% 2%, 95% 8%, 95% 92%, 50% 98%, 5% 92%)', // Creates the cropped corners
         }}
       >
-        <p className="text-center p-4 text-[20px] mt-[25px]">HOME RENT TO PAY</p>
+        <p className="text-center p-4 text-[20px] mt-[16px]">HOME RENT TO PAY</p>
         <div className="flex justify-center space-x-[-20px] mt-4">
           <img
             src={"/assets/dollar_bunch.png"}
@@ -36,14 +37,14 @@ const RentModal = () => {
             alt={"dollar_bunch.png"}
             width={32}
             height={32}
-            className="-mt-2"
+            className="-translate-y-[5px]"
           />
           <img
             src={"/assets/dollar_bunch.png"}
             alt={"dollar_bunch.png"}
             width={32}
             height={32}
-            className="mt-4"
+            className="translate-y-[5px]"
           />
         </div>
         <div className="relative flex mt-2">
@@ -115,13 +116,7 @@ export default function Rent() {
         {isMobile && !isPortrait ?
           <>
             <div className="w-full flex justify-between items-center px-[67px]">
-              <img
-                src={"/assets/menu_hamburger.png"}
-                alt={"menu_hamburger"}
-                width={91}
-                height={90}
-                className="cursor-pointer"
-              />
+              <MenuBar />
               <Button
                 image={"/assets/button_primary.png"}
                 className={"w-[206px] h-[55px]"}
@@ -144,14 +139,8 @@ export default function Rent() {
           </>
           :
           <>
-            <div className="w-full flex justify-between items-center px-[67px]">
-              <img
-                src={"/assets/menu_hamburger.png"}
-                alt={"menu_hamburger"}
-                width={91}
-                height={90}
-                className="cursor-pointer"
-              />
+            <div className="w-full flex justify-between items-start px-[67px]">
+              <MenuBar />
               <Button
                 image={"/assets/button_primary.png"}
                 className={"w-[206px] h-[55px]"}
