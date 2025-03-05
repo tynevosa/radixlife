@@ -1,5 +1,7 @@
+@import "tailwindcss";
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Irish Grover', sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -11,32 +13,36 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --radix-connect-button-width: 206px;
-  --radix-connect-button-height: 55px;
-  --radix-connect-button-border-radius: 30px;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-.hidden {
-  display: none;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
     background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
   }
 
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@layer base {
+  html {
+    font-size: 20px;
+    /* Default text size for mobile */
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 16px;
+      /* Normal size on larger screens */
+    }
+  }
+
+  /* For mobile landscape mode */
+  @media (max-width: 1024px) and (orientation: landscape) {
+    html {
+      font-size: 20px;
+      /* Adjust text size for mobile landscape */
+    }
   }
 }
