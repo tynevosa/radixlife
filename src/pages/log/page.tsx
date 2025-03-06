@@ -28,7 +28,7 @@ const LogModal = () => {
       >
         <p className="p-4 text-[20px]">
           ACTIVITY: JAILED AT 2PM SUNDAY.<br />
-          REASON: RENT NOT PAID
+          REASON: DEBIT NOT PAID
         </p>
         <p className="p-4 text-[20px]">
           TIME:<br />

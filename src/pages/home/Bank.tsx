@@ -33,7 +33,7 @@ const Bank: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center font-[16px]">
               $3005
             </div>
-            <Link to={"/rent"}>
+            <Link to={"/debit"}>
               <img
                 src={"/assets/balance_plus.png"}
                 alt={"balance_plus"}
@@ -60,7 +60,7 @@ const Bank: React.FC = () => {
               height={40}
               className="w-[211px] h-[44.3px]"
             />
-            <div className="absolute inset-0 flex items-center justify-center font-[16px]">
+            <div className="absolute inset-0 flex items-center justify-center font-[16px] text-[#FF3838]">
               -$252.36
             </div>
           </div>
