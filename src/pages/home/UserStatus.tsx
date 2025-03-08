@@ -1,4 +1,8 @@
+import { useRadixian } from "../../context";
+
 const UserStatus: React.FC = () => {
+  const { info, selectedNFT } = useRadixian();
+
   return (
     <div className="w-[488px] h-[138px] flex gap-2">
       <div className={`relative flex justify-center items-center`}>
@@ -9,7 +13,7 @@ const UserStatus: React.FC = () => {
           height={138}
         />
         <img
-          src={"/assets/user_avatar.png"}
+          src={info?.image}
           alt={"user_avatar"}
           width={138}
           height={138}
@@ -17,24 +21,27 @@ const UserStatus: React.FC = () => {
         />
       </div>
       <div className="flex flex-col justify-center">
-        <img
-          src={"/assets/frame_name.png"}
-          alt={"frame_name"}
-          width={341.91}
-          height={52.83}
-        />
+        <div className="relative">
+          <img
+            src={"/assets/frame_name.png"}
+            alt={"frame_name"}
+            width={341.91}
+            height={52.83}
+          />
+          <div className="absolute inset-0 flex items-center justify-start font-[16px] px-6">
+            {selectedNFT}
+          </div>
+        </div>
         <div className="flex items-center mr-[18.96px]">
           <span className="mr-3 font-[16px]">AGE</span>
           <div className="relative">
             <img
               src={"/assets/frame_other.png"}
               alt={"frame_other"}
-              width={53.53}
-              height={31.62}
-              className="w-[53.53px] h-[31.62px]"
+              className="w-[150px] h-[31.62px]"
             />
             <div className="absolute inset-0 flex items-center justify-center font-[16px]">
-              1 Yr
+              {info?.age_range}
             </div>
           </div>
           <img

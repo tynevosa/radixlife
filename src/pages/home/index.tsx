@@ -14,7 +14,7 @@ import Ocuppation from "./Occupation";
 import BuyEgg from "./BuyEgg";
 import Character from "./Character";
 import useDeviceOrientation from "../../hooks/device";
-import { useRadixDappToolkit } from "../..//hooks/radix";
+import { useRadixian } from "../../context";
 
 const MAX_HEIGHT = 378;
 const ELEMENTS_SIZES: { width: number; height: number }[] = [
@@ -62,7 +62,6 @@ const ELEMENTS_SIZES: { width: number; height: number }[] = [
 
 export default function Home() {
   const { isMobile, isPortrait, windowSize } = useDeviceOrientation();
-  const { dAppToolkit } = useRadixDappToolkit();
   const [scaleX, setScaleX] = useState(1);
   const [scaleY, setScaleY] = useState(1);
 
@@ -91,9 +90,8 @@ export default function Home() {
     updateScale();
   }, [])
 
-  useEffect(() => {
-    dAppToolkit && dAppToolkit.buttonApi.setMode('dark');
-  }, [dAppToolkit])
+  const { info } = useRadixian();
+  const { choices, jailed, schooling, occupation } = info ?? {};
 
   return (
     isMobile ?
@@ -122,15 +120,24 @@ export default function Home() {
               <div className="flex flex-col items-center gap-6">
                 <UserDetail />
                 <Job />
-                <Ocuppation />
+                {occupation &&
+                  <Ocuppation />
+                }
                 <Item />
                 <BuyEgg />
               </div>
               <div className="flex flex-col items-center gap-6">
                 <Bank />
-                <School />
-                <Jail />
-                <Choice />
+                {schooling &&
+                  <School />
+                }
+                {jailed &&
+                  <Jail />
+                }
+                {choices?.length ?
+                  <Choice choices={choices} />
+                  : <></>
+                }
                 <Store />
               </div>
             </div>
@@ -165,15 +172,16 @@ export default function Home() {
                 {[
                   <UserDetail />,
                   <Bank />,
-                  <School />,
-                  <Jail />,
-                  <Choice />,
+                  schooling ? <School /> : undefined,
+                  jailed ? <Jail /> : undefined,
+                  choices?.length ? <Choice choices={choices} /> : undefined,
                   <Store />,
                   <Job />,
                   <Item />,
-                  <Ocuppation />,
+                  occupation ? <Ocuppation /> : undefined,
                   <BuyEgg />,
                 ].map((Component, index) => {
+                  if (Component === undefined) return <></>;
                   const size = ELEMENTS_SIZES[index] || { width: 1, height: 1 }; // Default values prevent division by zero
                   const scale = MAX_HEIGHT / size.height;
                   const marginRight = Math.abs(1 - scale) * size.width;
@@ -219,13 +227,20 @@ export default function Home() {
             <Bank />
           </div>
           <div className="absolute left-[745px] top-[157px]">
-            <School />
+            {schooling &&
+              <School />
+            }
           </div>
           <div className="absolute left-[745px] top-[447px]">
-            <Jail />
+            {jailed &&
+              <Jail />
+            }
           </div>
           <div className="absolute left-[1082px] top-[148px]">
-            <Choice />
+            {choices?.length ?
+              <Choice choices={choices} />
+              : <></>
+            }
           </div>
           <div className="absolute left-[1083px] top-[469px]">
             <Store />
@@ -237,7 +252,9 @@ export default function Home() {
             <Job />
           </div>
           <div className="absolute left-[1110px] top-[790px]">
-            <Ocuppation />
+            {occupation &&
+              <Ocuppation />
+            }
           </div>
           <div className="absolute left-[121px] top-[813px]">
             <BuyEgg />

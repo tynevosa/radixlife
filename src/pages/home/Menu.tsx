@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useRadixian } from "../../context";
+import { useMemo } from "react";
 
 interface MenuProps {
   className?: string,
@@ -10,27 +12,6 @@ interface MenuItemProps {
   title: string,
   navigation: string,
 }
-
-const MENU: MenuItemProps[] = [
-  {
-    frame: '/assets/frame_other.png',
-    icon: '/assets/icon_notification.png',
-    title: 'NOTIFICATION',
-    navigation: '/',
-  },
-  {
-    frame: '/assets/frame_other.png',
-    icon: '/assets/icon_log.png',
-    title: 'LOG',
-    navigation: '/log',
-  },
-  {
-    frame: '/assets/frame_other.png',
-    icon: '/assets/icon_chat.png',
-    title: 'CHAT',
-    navigation: '/',
-  }
-]
 
 const MenuItem: React.FC<MenuItemProps> = (props) => {
   return (
@@ -51,7 +32,7 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
           alt={props.icon}
           width={40.08}
           height={37.61}
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${props.icon === '/assets/icon_notification_warn.png' && 'alarm-shake'}`}
         />
       </div>
       <span className="text-[14px]">
@@ -62,9 +43,36 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
 }
 
 const Menu: React.FC<MenuProps> = (props) => {
+  const { info } = useRadixian();
+  const menu = useMemo(() => {
+    let default_menu: MenuItemProps[] = [{
+      frame: '/assets/frame_other.png',
+      icon: '/assets/icon_notification.png',
+      title: 'NOTIFICATION',
+      navigation: '/',
+    },
+    {
+      frame: '/assets/frame_other.png',
+      icon: '/assets/icon_log.png',
+      title: 'LOG',
+      navigation: '/log',
+    },
+    {
+      frame: '/assets/frame_other.png',
+      icon: '/assets/icon_chat.png',
+      title: 'CHAT',
+      navigation: '/',
+    }]
+    if (info) {
+      const { clothing, living_in, desires } = info;
+      if (!(clothing && living_in && desires)) default_menu[0].icon = '/assets/icon_notification_warn.png';
+    }
+    return default_menu;
+  }, [info]);
+
   return (
     <div className={`flex gap-[26px] ${props.className}`}>
-      {MENU.map((m, i) => (
+      {menu.map((m, i) => (
         <MenuItem
           key={i}
           {...m}

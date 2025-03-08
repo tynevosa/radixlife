@@ -1,6 +1,6 @@
 import React from "react";
 
-interface ButtonProps {
+interface ButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   image: string;
   className: string;
   text: string;
@@ -9,10 +9,11 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = ({
   image,
   className = "",
-  text = "BUTTON"
+  text = "BUTTON",
+  ...props
 }) => {
   return (
-    <div className={`relative flex text-[#720E20] ${className} cursor-pointer hover:opacity-80 transition-transform duration-200 active:scale-80`}>
+    <div className={`relative flex text-[#720E20] ${className} cursor-pointer hover:opacity-80 transition-transform duration-200 active:scale-80`} {...props}>
       <img
         src={image}
         alt={"button"}

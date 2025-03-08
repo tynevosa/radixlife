@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import useDeviceOrientation from "../../hooks/device";
 import Button from "../../components/button";
 import MenuBar from "../../components/menu";
+import { useRadixian } from "../../context";
+import type { Log } from "../../api/character_info";
 
 const LogModal = () => {
+  const { info } = useRadixian();
   return (
     <div className="w-[939px] h-[621px] relative">
       <img
@@ -21,19 +24,19 @@ const LogModal = () => {
         }}
       />
       <div
-        className="absolute w-full h-full flex flex-col overflow-hidden p-20"
+        className="absolute w-full h-full overflow-hidden p-20"
         style={{
           clipPath: 'polygon(5% 8%, 50% 2%, 95% 8%, 95% 92%, 50% 98%, 5% 92%)', // Creates the cropped corners
         }}
       >
-        <p className="p-4 text-[20px]">
-          ACTIVITY: JAILED AT 2PM SUNDAY.<br />
-          REASON: DEBIT NOT PAID
-        </p>
-        <p className="p-4 text-[20px]">
-          TIME:<br />
-          09:25:35AM
-        </p>
+        <div className="w-full h-full flex flex-col overflow-y-scroll">
+          {info?.logs.map((log: Log) => (
+            <p className="p-4 text-[20px] uppercase">
+              {log.time} <br />
+              <p className="w-full text-wrap pt-2 pl-4">{log.text}</p>
+            </p>
+          ))}
+        </div>
       </div>
     </div>
   )

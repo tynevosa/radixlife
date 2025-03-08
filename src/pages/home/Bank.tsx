@@ -1,7 +1,9 @@
 import Button from "../../components/button";
 import { Link } from 'react-router-dom';
+import { useRadixian } from "../../context";
 
 const Bank: React.FC = () => {
+  const { info } = useRadixian();
   return (
     <div className="w-[320px] h-[378px] px-[22px] flex flex-col items-center rounded-[10px] bg-gradient-to-b from-[#DDBB4B]/15 to-[#999999]/15">
       <div className="flex flex-col items-center gap-[13.53px]">
@@ -31,17 +33,15 @@ const Bank: React.FC = () => {
               className="w-[211px] h-[44.3px]"
             />
             <div className="absolute inset-0 flex items-center justify-center font-[16px]">
-              $3005
+              ${info?.bank_account_amount}
             </div>
-            <Link to={"/debit"}>
-              <img
-                src={"/assets/balance_plus.png"}
-                alt={"balance_plus"}
-                width={28.3}
-                height={28.3}
-                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
-              />
-            </Link>
+            <img
+              src={"/assets/balance_plus.png"}
+              alt={"balance_plus"}
+              width={28.3}
+              height={28.3}
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+            />
           </div>
         </div>
         <img
@@ -52,18 +52,20 @@ const Bank: React.FC = () => {
         />
         <div className="flex items-center gap-[14px]">
           <span>DEBIT</span>
-          <div className="relative flex">
-            <img
-              src={"/assets/frame_other_long.png"}
-              alt={"frame_other_long"}
-              width={185}
-              height={40}
-              className="w-[211px] h-[44.3px]"
-            />
-            <div className="absolute inset-0 flex items-center justify-center font-[16px] text-[#FF3838]">
-              -$252.36
+          <Link to={"/debit"}>
+            <div className="relative flex cursor-pointer">
+              <img
+                src={"/assets/frame_other_long.png"}
+                alt={"frame_other_long"}
+                width={185}
+                height={40}
+                className="w-[211px] h-[44.3px]"
+              />
+              <div className="absolute inset-0 flex items-center justify-center font-[16px] text-[#FF3838]">
+                -$252.36
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
       <div className="flex gap-3 mt-[40px]">

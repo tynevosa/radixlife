@@ -4,17 +4,20 @@ import Home from './pages/home'
 import Debit from './pages/debit/page'
 import Log from './pages/log/page'
 import Jail from './pages/jail/page'
+import RadixianProvider from './context'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/debit" element={<Debit />} />
-        <Route path="/log" element={<Log />} />
-        <Route path="/jail" element={<Jail />} />
-      </Routes>
-    </BrowserRouter>
+    <RadixianProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/debit" element={<Debit />} />
+          <Route path="/log" element={<Log />} />
+          <Route path="/jail" element={<Jail />} />
+        </Routes>
+      </BrowserRouter>
+    </RadixianProvider>
   )
 }
 
