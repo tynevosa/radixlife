@@ -7,7 +7,7 @@ const UserDetail: React.FC = () => {
   return (
     <div className={`px-[13px] flex ${!isMobile || isPortrait ? "w-[302px] h-[563px] py-[27px] flex-col" : "h-[270px] py-[12px] gap-6"} items-center rounded-[8.2px] bg-[#0C0C16] border border-black`}>
       <div className={`flex flex-col gap-3 items-center w-[200px]`}>
-        <span className="text-[20px]">{selectedNFT} ▼</span>
+        <span className="text-[20px]">{selectedNFT?.name || selectedNFT?.id} ▼</span>
         <div className="relative flex mx-4">
           <img
             src={"/assets/user_avatar_mask.png"}

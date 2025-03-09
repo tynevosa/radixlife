@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode, useState, SetStateAction, Dispatch, useEffect } from "react";
 
-import { GatewayApiClient } from "@radixdlt/babylon-gateway-api-sdk";
+import { GatewayApiClient, ProgrammaticScryptoSborValueString, ProgrammaticScryptoSborValueTuple } from "@radixdlt/babylon-gateway-api-sdk";
 import {
   RadixDappToolkit,
   RadixNetwork,
@@ -8,11 +8,14 @@ import {
   DataRequestBuilder,
   generateRolaChallenge,
 } from "@radixdlt/radix-dapp-toolkit";
-import { fetchCharacterInfo, NFT_INFO } from "../api/character_info";
+import { fetchCharacterInfo, CHARACTER_INFO } from "../api/character_info";
+import { NFT_INFO } from "../type/character";
 
 const logger = Logger();
 const dAppDefinitionAddress = import.meta.env.VITE_DAPP_DEFINITION_ADDRESS;
 const networkId = RadixNetwork.Stokenet;
+
+const NFT_ADDRESS = import.meta.env.VITE_NFT_ADDRESS;
 
 // Lazy initialization to prevent SSR errors
 let dAppToolkitInstance: RadixDappToolkit | null = null;
@@ -20,32 +23,33 @@ let dAppToolkitInstance: RadixDappToolkit | null = null;
 
 // Define the type for the context
 interface RadixianContextType {
-  info?: NFT_INFO,
+  info?: CHARACTER_INFO,
   setInfo: Dispatch<SetStateAction<any>>,
   dAppToolkit?: RadixDappToolkit,
   gatewayApi?: GatewayApiClient,
-  NFTs: string[],
-  setNFTs: Dispatch<SetStateAction<string[]>>,
-  selectedNFT?: string,
-  setSelectedNFT: Dispatch<SetStateAction<string | undefined>>,
+  NFTs: NFT_INFO[],
+  setNFTs: Dispatch<SetStateAction<NFT_INFO[]>>,
+  selectedNFT?: NFT_INFO,
+  setSelectedNFT: Dispatch<SetStateAction<NFT_INFO | undefined>>,
 }
+
 
 // Create the context with an initial value
 const RadixianContext: React.Context<RadixianContextType | undefined> = createContext<RadixianContextType | undefined>(undefined);
 
 const RadixianProvider = ({ children }: { children: ReactNode }) => {
-  const [info, setInfo] = useState<NFT_INFO>();
+  const [info, setInfo] = useState<CHARACTER_INFO>();
   const [dAppToolkit, setDAppToolkit] = useState<RadixDappToolkit>();
   const [gatewayApi, setGatewayApi] = useState<GatewayApiClient>();
-  const [NFTs, setNFTs] = useState<string[]>([]);
-  const [selectedNFT, setSelectedNFT] = useState<string>();
+  const [NFTs, setNFTs] = useState<NFT_INFO[]>([]);
+  const [selectedNFT, setSelectedNFT] = useState<NFT_INFO>();
 
   useEffect(() => {
     if (typeof window !== "undefined" && !dAppToolkitInstance) {
       const toolkit = RadixDappToolkit({
         dAppDefinitionAddress,
         networkId,
-        // logger,
+        logger,
       });
 
       toolkit.walletApi.provideChallengeGenerator(async () =>
@@ -75,11 +79,16 @@ const RadixianProvider = ({ children }: { children: ReactNode }) => {
           const entity = await gatewayApi.state.getEntityDetailsVaultAggregated(data.accounts[0].address);
           const { non_fungible_resources } = entity;
           const { items } = non_fungible_resources;
-          const item = items.find(item => item.resource_address === import.meta.env.VITE_NFT_ADDRESS);
+          const item = items.find(item => item.resource_address === NFT_ADDRESS);
           const ids = item?.vaults.items[0].items || [];
           if (ids.length) {
-            setNFTs(ids);
-            setSelectedNFT(ids[0]);
+            const nfts = await gatewayApi.state.getNonFungibleData(NFT_ADDRESS, ids);
+            const mapped_nfts: NFT_INFO[] = nfts.map(nft => ({
+              id: nft.non_fungible_id,
+              name: ((nft.data?.programmatic_json as ProgrammaticScryptoSborValueTuple).fields.find(field => field.field_name === "name") as ProgrammaticScryptoSborValueString).value
+            }))
+            setNFTs(mapped_nfts);
+            setSelectedNFT(mapped_nfts[0]);
           }
         }
       });
@@ -88,7 +97,7 @@ const RadixianProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!selectedNFT) return
-    fetchCharacterInfo(selectedNFT).then(data => {
+    fetchCharacterInfo(selectedNFT.id).then(data => {
       setInfo(data);
     })
   }, [selectedNFT]);
@@ -100,7 +109,7 @@ const RadixianProvider = ({ children }: { children: ReactNode }) => {
         dAppToolkit,
         gatewayApi,
         NFTs, setNFTs,
-        selectedNFT, setSelectedNFT
+        selectedNFT, setSelectedNFT,
       }}
     >
       {children}

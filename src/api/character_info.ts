@@ -41,7 +41,7 @@ export type Desire = {
   object_name: string,
 }
 
-export type NFT_INFO = {
+export type CHARACTER_INFO = {
   image: string,
   name?: string,
   father?: string,
@@ -71,8 +71,8 @@ export type NFT_INFO = {
   owned_objects: Object[],
   logs: Log[],
 }
-export async function fetchCharacterInfo(id: string): Promise<NFT_INFO> {
+export async function fetchCharacterInfo(id: string): Promise<CHARACTER_INFO> {
   return backend.get('/nft_info.php', {
     params: { id }
-  }).then((res) => res.data as NFT_INFO)
+  }).then((res) => res.data as CHARACTER_INFO)
 }
