@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/button";
 
 const BuyEgg: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center">
       <img
@@ -14,6 +16,7 @@ const BuyEgg: React.FC = () => {
           image={"/assets/button_primary.png"}
           className={"w-[179px] h-[46px]"}
           text={"BUY EGG"}
+          onClick={() => navigate('/egg')}
         />
       </div>
     </div>
