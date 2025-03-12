@@ -6,6 +6,8 @@ import Log from './pages/log/page'
 import Jail from './pages/jail/page'
 import RadixianProvider from './context'
 import Egg from './pages/egg'
+import Mall from './pages/mall'
+import Store from './pages/store'
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/log" element={<Log />} />
           <Route path="/jail" element={<Jail />} />
           <Route path="/egg" element={<Egg />} />
+          <Route path="/mall" element={<Mall />} />
+          <Route path="/store" element={<Store />} />
         </Routes>
       </BrowserRouter>
     </RadixianProvider>

@@ -8,7 +8,7 @@ const MenuBar: React.FC = () => {
   const { isPortrait } = useDeviceOrientation();
 
   return (
-    <div className="relative flex">
+    <div className="relative flex pointer-events-none">
       <label htmlFor="toggle">
         <input type="checkbox" id="toggle" onChange={(e) => setShow(e.target.checked)} className="peer hidden" />
         <img
@@ -16,7 +16,7 @@ const MenuBar: React.FC = () => {
           alt="menu_hamburger"
           width="91"
           height="90"
-          className="cursor-pointer hover:opacity-80 transition-transform duration-200 active:scale-80"
+          className="cursor-pointer hover:opacity-80 transition-transform duration-200 active:scale-80 pointer-events-auto"
         />
       </label>
       <div className={`absolute left-full top-1/2 ml-[23px] select-none ${show ? 'opacity-100' : 'opacity-0'} flex ${isPortrait ? 'flex-col gap-3' : 'flex-row justify-between items-center w-[943px] h-[138px]'} transition-all duration-200 -translate-y-[69px]`}>

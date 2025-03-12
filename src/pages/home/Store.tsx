@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/button";
 
 const Store: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-[312px] h-[290px] flex flex-col items-center gap-4">
       <span className="text-[20px]">STORE</span>
@@ -15,6 +17,7 @@ const Store: React.FC = () => {
           image={"/assets/button_secondary.png"}
           className={"w-[206px] h-[46px] text-white"}
           text={"STORE"}
+          onClick={() => navigate('/mall')}
         />
       </div>
     </div>

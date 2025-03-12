@@ -17,7 +17,7 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
   return (
     <Link
       to={props.navigation}
-      className="flex flex-col items-center"
+      className="flex flex-col items-center pointer-events-auto"
     >
       <div className="relative flex cursor-pointer">
         <img
